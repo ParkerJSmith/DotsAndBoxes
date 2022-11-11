@@ -22,6 +22,7 @@ let mouseY = 0;
 
 let hoverX = -1;
 let hoverY = -1;
+let orientation = 0;
 
 document.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
@@ -42,6 +43,7 @@ function tick() {
     let canvasYOffset = document.getElementById("canvas").getBoundingClientRect().top;
     hoverX = -1;
     hoverY = -1;
+    orientation = 0;
     for (let i = 0; i < gridWidth - 1; i++) {
         if (mouseX > canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) && mouseX < canvasXOffset + (canvasSize / gridWidth) * (i + 1) + ((canvasSize / gridWidth - 10) / 2)) {
             hoverX = i;
@@ -64,8 +66,11 @@ function render() {
             ctx.fillRect((canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2), (canvasSize / gridHeight) * j + ((canvasSize / gridHeight - 10) / 2), 10, 10);
         }
     }
-    if (hoverX != -1 && hoverY != -1) {
+    if (hoverX != -1 && hoverY != -1 && orientation == 0) {
         ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 2, canvasSize / gridWidth, 6);
+    }
+    if (hoverX != -1 && hoverY != -1 && orientation == 0) {
+        ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 2, 6, canvasSize / gridWidth);
     }
 }
 
