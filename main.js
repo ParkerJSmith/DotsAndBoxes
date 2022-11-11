@@ -44,21 +44,20 @@ function tick() {
     hoverX = -1;
     hoverY = -1;
     orientation = 0;
+
     for (let i = 0; i < gridWidth - 1; i++) {
-        for (let j = 0; j < gridHeight - 1; j++) {
-            let yRange = -1;
-            if (mouseY < canvasYOffset + (canvasSize / gridHeight) * j + ((canvasSize / gridHeight - 10) / 2) || mouseY > canvasYOffset + (canvasSize / gridHeight) * (j + 1) + ((canvasSize / gridHeight - 10) / 2)) {
-                continue;
-            } else {
-                hoverY = j;
-            }
-            yRange = (mouseY - (canvasYOffset + (canvasSize / gridHeight) * j + ((canvasSize / gridHeight - 10) / 2))) / ((canvasSize / gridHeight));
-            console.log(yRange);
-            if (mouseX > canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) && mouseX < canvasXOffset + (canvasSize / gridWidth) * (i + 1) + ((canvasSize / gridWidth - 10) / 2)) {
-                hoverX = i;
-            }
+        if (mouseX > canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) - 10 && mouseX < canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) + 10) {
+            hoverX = i;
+            hoverY = i;
         }
     }
+    for (let i = 0; i < gridHeight - 1; i++) {
+        if (mouseY > canvasYOffset + (canvasSize / gridHeight) * i + ((canvasSize / gridHeight - 10) / 2) - 10 && mouseY < canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) + 10) {
+            hoverX = i;
+            hoverY = i;
+        }
+    }    
+
     //console.log("X: " + hoverX + " Y: " + hoverY);
 }
 
