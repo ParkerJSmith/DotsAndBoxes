@@ -45,6 +45,8 @@ function tick() {
     hoverY = -1;
     orientation = 0;
     for (let i = 0; i < gridWidth - 1; i++) {
+        let yRange = (mouseY - canvasYOffset + (canvasSize / gridHeight) * i + ((canvasSize / gridHeight - 10) / 2)) / (canvasYOffset + (canvasSize / gridHeight) * (i + 1) + ((canvasSize / gridHeight - 10) / 2));
+        console.log(yRange);
         if (mouseX > canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) && mouseX < canvasXOffset + (canvasSize / gridWidth) * (i + 1) + ((canvasSize / gridWidth - 10) / 2)) {
             hoverX = i;
         }
@@ -69,8 +71,8 @@ function render() {
     if (hoverX != -1 && hoverY != -1 && orientation == 0) {
         ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 2, canvasSize / gridWidth, 6);
     }
-    if (hoverX != -1 && hoverY != -1 && orientation == 0) {
-        ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 2, 6, canvasSize / gridWidth);
+    if (hoverX != -1 && hoverY != -1 && orientation == 1) {
+        ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridWidth);
     }
 }
 
