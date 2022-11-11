@@ -6,15 +6,18 @@ let gridWidth = 9;
 
 heightSlider.oninput = function() {
     gridHeight = this.value;
+    resetGame();
 }
 
 let widthSlider = document.getElementById("widthSlider");
 
 widthSlider.oninput = function() {
     gridWidth = this.value;
+    resetGame();
 }
 
 document.getElementById("reset-button").addEventListener("click", resetGame);
+document.getElementById("player-toggle").addEventListener("click", togglePlayers);
 
 let ctx = document.getElementById("canvas").getContext("2d");
 resizeCanvas();
@@ -25,12 +28,14 @@ let mouseY = 0;
 let hoverX = -1;
 let hoverY = -1;
 let orientation = 0;
-numOfPlayers = 2;
-currentPlayer = 1;
+let numOfPlayers = 3;
+let currentPlayer = 1;
 
-player1Lines = [];
-player2Lines = [];
-player3Lines = [];
+let player1Lines = [];
+let player2Lines = [];
+let player3Lines = [];
+
+let placedLines = [];
 
 document.addEventListener('mousemove', (event) => {
     mouseX = event.clientX;
@@ -49,6 +54,7 @@ function gameLoop() {
 }
 
 function tick() {
+    console.log("Current player: " + currentPlayer);
     let canvasSize = document.getElementById("canvas").height;
     let canvasXOffset = document.getElementById("canvas").getBoundingClientRect().left;
     let canvasYOffset = document.getElementById("canvas").getBoundingClientRect().top;
@@ -65,8 +71,7 @@ function tick() {
                 }
             }
             if (mouseY > canvasYOffset + (canvasSize / gridHeight) * j + ((canvasSize / gridHeight - 10) / 2) && mouseY < canvasYOffset + (canvasSize / gridHeight) * (j + 1) + ((canvasSize / gridHeight - 10) / 2)) {
-                console.log("inside");
-                if (mouseX > canvasXOffset + (canvasSize / gridHeight) * i + ((canvasSize / gridWidth - 10) / 2) - 20 && mouseX < canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) + 20) {
+                if (mouseX > canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) - 20 && mouseX < canvasXOffset + (canvasSize / gridWidth) * i + ((canvasSize / gridWidth - 10) / 2) + 20) {
                     hoverX = i;
                     hoverY = j;
                     orientation = 1;
@@ -85,8 +90,6 @@ function tick() {
     } else {
         document.getElementById("canvas").style.cursor = "initial";
     }
-
-    console.log("X: " + hoverX + " Y: " + hoverY);
 }
 
 function render() {
@@ -97,7 +100,7 @@ function render() {
         ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 2, canvasSize / gridWidth, 6);
     }
     if (hoverX != -1 && hoverY != -1 && orientation == 1) {
-        ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridWidth);
+        ctx.fillRect((canvasSize / gridWidth) * hoverX + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * hoverY + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridHeight);
     }
 
     ctx.fillStyle = "#FF0000";
@@ -106,7 +109,7 @@ function render() {
             ctx.fillRect((canvasSize / gridWidth) * player1Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * player1Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 2, canvasSize / gridWidth, 6);
         }
         if (player1Lines[i].orient == 1) {
-            ctx.fillRect((canvasSize / gridWidth) * player1Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * player1Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridWidth);
+            ctx.fillRect((canvasSize / gridWidth) * player1Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * player1Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridHeight);
         }
     }
 
@@ -116,17 +119,17 @@ function render() {
             ctx.fillRect((canvasSize / gridWidth) * player2Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * player2Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 2, canvasSize / gridWidth, 6);
         }
         if (player2Lines[i].orient == 1) {
-            ctx.fillRect((canvasSize / gridWidth) * player2Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * player2Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridWidth);
+            ctx.fillRect((canvasSize / gridWidth) * player2Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * player2Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridHeight);
         }
     }
 
-    ctx.fillStyle = "#0000FF";
+    ctx.fillStyle = "#00FF00";
     for (let i = 0; i < player3Lines.length; i++) {
         if (player3Lines[i].orient == 0) {
             ctx.fillRect((canvasSize / gridWidth) * player3Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 5, (canvasSize / gridHeight) * player3Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 2, canvasSize / gridWidth, 6);
         }
         if (player3Lines[i].orient == 1) {
-            ctx.fillRect((canvasSize / gridWidth) * player3Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * player3Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridWidth);
+            ctx.fillRect((canvasSize / gridWidth) * player3Lines[i].x + ((canvasSize / gridWidth - 10) / 2) + 2, (canvasSize / gridHeight) * player3Lines[i].y + ((canvasSize / gridHeight - 10) / 2) + 5, 6, canvasSize / gridHeight);
         }
     }
 
@@ -151,20 +154,45 @@ function resetGame() {
     hoverX = -1;
     hoverY = -1;
     orientation = 0;
+
+    player1Lines = [];
+    player2Lines = [];
+    player3Lines = [];
+
+    placedLines = [];
+}
+
+function togglePlayers() {
+    if (numOfPlayers == 2) {
+        numOfPlayers = 3;
+    } else {
+        numOfPlayers = 2;
+    }
+    resetGame();
 }
 
 function placeLine() {
-    if (hoverX != -1 && hoverY != -1 && currentPlayer == 1) {
-        player1Lines.push({x: hoverX, y: hoverY, orient: orientation});
+    for (let i = 0; i < placedLines.length; i++) {
+	if (hoverX == placedLines[i].x && hoverY == placedLines[i].y && orientation == placedLines[i].orient) {
+	    return;
+	}
     }
-    if (hoverX != -1 && hoverY != -1 && currentPlayer == 2) {
+    if ((hoverX != -1 && hoverY != -1) && currentPlayer == 1) {
         player1Lines.push({x: hoverX, y: hoverY, orient: orientation});
+        currentPlayer++;
+        placedLines.push({x: hoverX, y: hoverY, orient: orientation});
     }
-    if (hoverX != -1 && hoverY != -1 && currentPlayer == 3) {
-        player1Lines.push({x: hoverX, y: hoverY, orient: orientation});
+    else if ((hoverX != -1 && hoverY != -1) && currentPlayer == 2) {
+        player2Lines.push({x: hoverX, y: hoverY, orient: orientation});
+        currentPlayer++;
+        placedLines.push({x: hoverX, y: hoverY, orient: orientation});
     }
-    currentPlayer++;
-    if (currentPlayer > 3) {
+    else if ((hoverX != -1 && hoverY != -1) && currentPlayer == 3) {
+        player3Lines.push({x: hoverX, y: hoverY, orient: orientation});
+        currentPlayer++;
+        placedLines.push({x: hoverX, y: hoverY, orient: orientation});
+    }
+    if (currentPlayer > numOfPlayers) {
         currentPlayer = 1;
     }
 }
