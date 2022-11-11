@@ -56,7 +56,7 @@ function tick() {
             hoverY = i;
         }
     }
-    console.log("X: " + hoverX + " Y: " + hoverY);
+    //console.log("X: " + hoverX + " Y: " + hoverY);
 }
 
 function render() {
