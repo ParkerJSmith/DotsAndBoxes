@@ -30,6 +30,7 @@ let hoverY = -1;
 let orientation = 0;
 let numOfPlayers = 3;
 let currentPlayer = 1;
+let gameOver = false;
 
 let player1Lines = [];
 let player2Lines = [];
@@ -54,6 +55,9 @@ function gameLoop() {
 }
 
 function tick() {
+    if (gameOver) {
+        console.log("GAME OVER");
+    }
     console.log("Current player: " + currentPlayer);
     let canvasSize = document.getElementById("canvas").height;
     let canvasXOffset = document.getElementById("canvas").getBoundingClientRect().left;
@@ -194,5 +198,9 @@ function placeLine() {
     }
     if (currentPlayer > numOfPlayers) {
         currentPlayer = 1;
+    }
+
+    if (placedLines.length == ((gridWidth - 1) * gridHeight) + ((gridHeight - 1) * gridWidth)) {
+        gameOver = true;
     }
 }
