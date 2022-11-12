@@ -236,7 +236,7 @@ input:checked + .toggle-slider:before {
     }
 
     50% {
-        transform: scale(1.2) rotate(180deg);
+        transform: scale(1.2) rotate(-180deg);
     }
 
     100% {
